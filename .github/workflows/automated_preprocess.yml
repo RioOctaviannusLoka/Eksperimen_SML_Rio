@@ -1,0 +1,37 @@
+name: Automated Data Preprocessing
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.12.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12.7"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Preprocessing Script
+        run: python preprocessing/automate_rio.py
+
+      - name: Commit and Push the Changes
+        run: |
+          git config --global user.email "github-actions[boy]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+          git add preprocessing/diabetes_prediction_preprocessing/*
+          git commit -m "chore: Auto preprocess data at $(date)"
+          git push
