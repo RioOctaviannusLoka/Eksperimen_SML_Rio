@@ -5,9 +5,11 @@ from sklearn.model_selection import train_test_split
 def drop_outliers(df):
     df_copy = df.copy()
     numeric_cols = df_copy.select_dtypes(include='number').columns
-    Q1 = df_copy.quantile(0.25)
-    Q3 = df_copy.quantile(0.75)
+    
+    Q1 = df_copy[numeric_cols].quantile(0.25)
+    Q3 = df_copy[numeric_cols].quantile(0.75)
     IQR = Q3 - Q1
+    
     df_copy = df_copy[~((df_copy[numeric_cols] < (Q1 - 1.5*IQR)) | (df_copy[numeric_cols] > (Q3 + 1.5*IQR))).any(axis=1)]
     return df_copy
 
